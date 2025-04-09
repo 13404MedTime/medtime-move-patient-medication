@@ -212,3 +212,67 @@ func UpdateTakeTime() error {
 
 	return nil
 }
+
+func DoRequest(url string, method string, body interface{}) ([]byte, error) {
+	data, err := json.Marshal(&body)
+	if err != nil {
+		return nil, err
+	}
+	client := &http.Client{
+		Timeout: time.Duration(60 * time.Second),
+	}
+
+	request, err := http.NewRequest(method, url, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("authorization", "API-KEY")
+	request.Header.Add("X-API-KEY", apiKey)
+
+	resp, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	respByte, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return respByte, nil
+}
+
+func Handler(status, message string) string {
+	var (
+		response Response
+		Message  = make(map[string]interface{})
+	)
+
+	sendMessage("move-patient-medication", status, message)
+	response.Status = status
+	data := Request{
+		Data: map[string]interface{}{
+			"data": message,
+		},
+	}
+	response.Data = data.Data
+	Message["message"] = message
+	respByte, _ := json.Marshal(response)
+	return string(respByte)
+}
+
+func sendMessage(functionName, errorStatus string, message interface{}) {
+	bot, err := tgbotapi.NewBotAPI("5625907982:AAGf-AKQCngObyXjpxQBWBiKhZhmmq-HP_k")
+	if err != nil {
+		log.Panic(err)
+	}
+
+	chatID := int64(-1001990127540)
+	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("message from %s function: %s\n%s", functionName, errorStatus, message))
+	_, err = bot.Send(msg)
+	if err != nil {
+		log.Panic(err)
+	}
+}
