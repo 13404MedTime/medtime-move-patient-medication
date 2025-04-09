@@ -276,3 +276,74 @@ func sendMessage(functionName, errorStatus string, message interface{}) {
 		log.Panic(err)
 	}
 }
+
+type Response struct {
+	Status string                 `json:"status"`
+	Data   map[string]interface{} `json:"data"`
+}
+
+type RequestBody struct {
+	ObjectIDs []string               `json:"object_ids"`
+	Data      map[string]interface{} `json:"data"`
+}
+
+type ClientApiResponse struct {
+	Data ClientApiData `json:"data"`
+}
+
+type ClientApiData struct {
+	Data ClientApiResp `json:"data"`
+}
+
+type ClientApiResp struct {
+	Response map[string]interface{} `json:"response"`
+}
+
+type Request struct {
+	Data map[string]interface{} `json:"data"`
+}
+
+type MultipleUpdateRequest struct {
+	Data Data `json:"data"`
+}
+
+type Data struct {
+	Objects []map[string]interface{} `json:"objects"`
+}
+
+type GetListClientApiResponse struct {
+	Data GetListClientApiData `json:"data"`
+}
+
+type GetListClientApiData struct {
+	Data GetListClientApiResp `json:"data"`
+}
+
+type GetListClientApiResp struct {
+	Response []map[string]interface{} `json:"response"`
+}
+
+type ResponseModel struct {
+	Status string                 `json:"status"`
+	Data   map[string]interface{} `json:"data"`
+}
+
+type NewRequestBody struct {
+	Data map[string]interface{} `json:"data"`
+}
+
+type CreateResponseBody struct {
+	Data CreateResponseModel `json:"data"`
+}
+
+type CreateResponseModel struct {
+	Data CreateResponse `json:"data"`
+}
+
+type CreateResponse struct {
+	Data map[string]interface{} `json:"data"`
+}
+
+type HoursOfDay struct {
+	HoursOfDay []string `json:"hours_of_day"`
+}
